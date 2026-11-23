@@ -1,0 +1,57 @@
+[
+  {
+    "file": "jetbrains-overview.png",
+    "width": 1440,
+    "height": 1323,
+    "themes": [
+      "jetbrains-dark-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  },
+  {
+    "file": "darcula-overview.png",
+    "width": 1440,
+    "height": 1323,
+    "themes": [
+      "darcula-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  },
+  {
+    "file": "language-gallery.png",
+    "width": 1440,
+    "height": 2131,
+    "themes": [
+      "jetbrains-dark-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  },
+  {
+    "file": "code-cards.png",
+    "width": 1440,
+    "height": 1004,
+    "themes": [
+      "jetbrains-dark-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  },
+  {
+    "file": "before-after.png",
+    "width": 1440,
+    "height": 832,
+    "themes": [
+      "jetbrains-dark-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  }
+]

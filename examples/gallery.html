@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pi JetBrains Transparent — component gallery</title>
+<link rel="stylesheet" href="/node_modules/@xterm/xterm/css/xterm.css">
+<style>
+@font-face { font-family: "JetBrains Mono"; src: url("/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2") format("woff2"); font-weight: 400; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #101215; color: #e2e4e9; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+main { max-width: 1440px; margin: auto; padding: 38px; }
+.eyebrow { color: #cf8e6d; font-size: 13px; letter-spacing: 1.8px; text-transform: uppercase; margin-bottom: 12px; }
+h1 { margin: 0; font-size: 38px; letter-spacing: -1.3px; font-weight: 650; }
+.subtitle { margin: 13px 0 25px; color: #a7adb7; font-size: 16px; line-height: 1.6; }
+#grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.card { min-width: 0; border: 1px solid #373b44; border-radius: 12px; padding: 18px; background: var(--terminal); }
+.card.wide { grid-column: 1 / -1; }
+.label { color: #a7adb7; font-size: 12px; letter-spacing: .45px; margin: 0 0 14px; }
+.term { overflow: hidden; }
+footer { margin-top: 21px; color: #858b96; font-size: 12px; line-height: 1.6; }
+.xterm .xterm-viewport { overflow: hidden !important; }
+</style>
+</head>
+<body><main>
+<div class="eyebrow">Pi JetBrains Transparent</div>
+<h1 id="title"></h1>
+<p class="subtitle" id="subtitle"></p>
+<div id="grid"></div>
+<footer>Native Pi tool components · Synthetic examples · JetBrains Mono<br>Display only. Original commands, native execution and permission checks are unchanged.</footer>
+</main>
+<script type="module">
+import { Terminal } from '/node_modules/@xterm/xterm/lib/xterm.mjs';
+await document.fonts.load('16px "JetBrains Mono"');
+let terminals = [];
+window.showFixtures = async ({ title, subtitle, fixtures }) => {
+  terminals.forEach(terminal => terminal.dispose());
+  terminals = [];
+  document.body.style.background = fixtures[0].palette.background;
+  document.getElementById('title').textContent = title;
+  document.getElementById('subtitle').textContent = subtitle;
+  const grid = document.getElementById('grid');
+  grid.replaceChildren();
+  for (const fixture of fixtures) {
+    const card = document.createElement('section');
+    card.className = 'card ' + fixture.kind + (fixture.cols > 100 ? ' wide' : '');
+    card.style.setProperty('--terminal', fixture.palette.background);
+    const label = document.createElement('div');
+    label.className = 'label'; label.textContent = fixture.title;
+    const host = document.createElement('div'); host.className = 'term';
+    card.append(label, host); grid.append(card);
+    const terminal = new Terminal({ cols: fixture.cols, rows: fixture.rows, scrollback: 0,
+      fontFamily: 'JetBrains Mono', fontSize: 16, fontWeight: '400', fontWeightBold: '500',
+      lineHeight: 1.4, cursorBlink: false, allowTransparency: true,
+      theme: fixture.palette });
+    terminal.open(host);
+    await new Promise(resolve => terminal.write('\x1b[?25l' + fixture.ansi, resolve));
+    terminals.push(terminal);
+  }
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+};
+window.refreshFixtures = () => {
+  window.paintCount = 0;
+  window.cardCount = terminals.length;
+  for (const terminal of terminals) {
+    const subscription = terminal.onRender(() => { subscription.dispose(); window.paintCount++; });
+    terminal.refresh(0, terminal.rows - 1);
+  }
+};
+window.galleryReady = true;
+</script></body></html>

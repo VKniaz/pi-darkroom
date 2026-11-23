@@ -1,0 +1,63 @@
+{
+  "name": "pi-jetbrains-transparent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Transparent chat, gray code cards and JetBrains-inspired syntax colors for Pi.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Kniaz",
+  "keywords": [
+    "pi-package",
+    "theme",
+    "syntax-highlighting",
+    "jetbrains",
+    "darcula"
+  ],
+  "files": [
+    "index.ts",
+    "highlight.mjs",
+    "themes",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md",
+    "docs/screenshots",
+    "code-cards.ts",
+    "markdown.ts"
+  ],
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ],
+    "themes": [
+      "./themes/*.json"
+    ],
+    "image": "https://unpkg.com/pi-jetbrains-transparent@0.1.0/docs/screenshots/jetbrains-overview.png"
+  },
+  "scripts": {
+    "test": "PI_OFFLINE=1 node --test tests/*.test.mjs",
+    "screenshots": "node scripts/capture-gallery.mjs",
+    "typecheck": "node scripts/typecheck.mjs"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "devDependencies": {
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@types/node": "^26.6.6",
+    "@xterm/xterm": "^6.0.0",
+    "playwright": "^1.65.1",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "peerDependenciesMeta": {
+    "@earendil-works/pi-coding-agent": {
+      "optional": true
+    },
+    "@earendil-works/pi-tui": {
+      "optional": true
+    }
+  }
+}
