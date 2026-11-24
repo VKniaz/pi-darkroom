@@ -17,7 +17,8 @@ test('visuals use both real themes, multiple formats and an explicit synthetic f
     for (const [color] of fixture.ansi.matchAll(/\x1b\[48;[0-9;]+m/g)) {
       assert.ok(['\x1b[48;2;37;38;42m', '\x1b[48;2;39;56;44m', '\x1b[48;2;62;40;42m', '\x1b[48;2;52;82;60m', '\x1b[48;2;95;52;55m'].includes(color), 'Only card and diff tints may have a fill: ' + JSON.stringify(color));
     }
-    assert.ok(!/\/Users\/|\/var\/folders\/|knyazevboba|adobe/i.test(fixture.ansi));
+    // Public screenshots must not leak machine paths or email addresses.
+    assert.ok(!/\/Users\/|\/home\/|\/var\/folders\/|[\w.+-]+@[\w-]+\.[\w.]+/i.test(fixture.ansi));
   }
   const before = fixtures.find(f => f.kind === 'before');
   const after = fixtures.find(f => f.kind === 'after');
