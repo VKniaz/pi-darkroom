@@ -34,7 +34,7 @@
     "themes": [
       "./themes/*.json"
     ],
-    "image": "https://unpkg.com/pi-jetbrains-transparent@0.1.0/docs/screenshots/jetbrains-overview.png"
+    "image": "https://raw.githubusercontent.com/VKniaz/pi-jetbrains-transparent/main/docs/screenshots/jetbrains-overview.png"
   },
   "scripts": {
     "test": "PI_OFFLINE=1 node --test tests/*.test.mjs",
@@ -62,5 +62,13 @@
     "@earendil-works/pi-tui": {
       "optional": true
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VKniaz/pi-jetbrains-transparent.git"
+  },
+  "homepage": "https://github.com/VKniaz/pi-jetbrains-transparent#readme",
+  "bugs": {
+    "url": "https://github.com/VKniaz/pi-jetbrains-transparent/issues"
   }
 }

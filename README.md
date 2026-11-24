@@ -20,7 +20,7 @@ This is display-only. It does not replace execution, add model tools, change pro
 ## Install
 
 ```sh
-pi install npm:pi-jetbrains-transparent
+pi install git:github.com/VKniaz/pi-jetbrains-transparent
 ```
 
 Run `/reload`, then open `/settings` → **Theme** and select either theme. Arrow keys preview themes; Enter keeps the selection and Esc cancels.
@@ -29,9 +29,11 @@ Run `/command-colors` to check that the renderer is enabled. If you previously i
 
 Requires Pi's renderer and Markdown-transformer APIs. Tested on **Pi 1.5.2 and 1.6.0 on macOS**; other platforms are not yet verified.
 
+This preview is distributed through GitHub. npm and Pi-catalog publication are not available yet.
+
 ## Gallery
 
-[JetBrains Dark overview](docs/screenshots/jetbrains-overview.png) · [Darcula overview](docs/screenshots/darcula-overview.png) · [Same-command comparison](docs/screenshots/before-after.png) · [Failure state](docs/screenshots/failure-state.png)
+[JetBrains Dark overview](docs/screenshots/jetbrains-overview.png) · [Darcula overview](docs/screenshots/darcula-overview.png) · [Same-command comparison](docs/screenshots/before-after.png) · [Failure state](docs/screenshots/failure-state.png) · [Plain-text accents](docs/screenshots/plain-text.png)
 
 ![Multiple language previews](docs/screenshots/language-gallery.png)
 
@@ -51,7 +53,7 @@ These are real browser captures of native Pi components rendered in an isolated 
 Switch to a built-in theme first, then:
 
 ```sh
-pi remove npm:pi-jetbrains-transparent
+pi remove git:github.com/VKniaz/pi-jetbrains-transparent
 ```
 
 Run `/reload`.
