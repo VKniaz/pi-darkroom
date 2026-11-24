@@ -1,7 +1,6 @@
 {
   "name": "pi-jetbrains-transparent",
   "version": "0.1.0",
-  "private": true,
   "description": "Transparent chat, gray code cards and JetBrains-inspired syntax colors for Pi.",
   "type": "module",
   "license": "MIT",
