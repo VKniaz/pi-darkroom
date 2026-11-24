@@ -4,6 +4,9 @@ import { highlightCommand } from './highlight.mjs';
 import { codeCard } from './code-cards.ts';
 import { markdownCodeCards } from './markdown.ts';
 import { syntaxCode, shellFileCommands } from './syntax.ts';
+import { EditDiffCard, DiffResultCard } from './diff.ts';
+import { compactBashSummary } from './compact.ts';
+import { loadSettings, saveSettings } from './settings.ts';
 
 const MAX_HIGHLIGHT_CHARACTERS = 50_000;
 type HighlightCache = { command: string; colors: object; mode: string; body: string };
@@ -35,10 +38,19 @@ export default function completedCommandColors(pi: ExtensionAPI) {
     const theme = themeSource?.();
     return theme ? markdownCodeCards(markdown, context, theme) : markdown;
   }, { messageTypes: ['user', 'assistant', 'assistant-thinking', 'custom'] });
+  const settings = loadSettings();
   pi.registerCommand('command-colors', {
-    description: 'Check whether completed command colors are loaded',
-    handler: async (_args, context) => {
-      context.ui.notify('Command colors: enabled. Gray code cards; consistent shell-command colors; plain unknown code; red failure labels.', 'info');
+    description: 'Show renderer status, or switch compact tool rows: /command-colors compact on|off',
+    handler: async (args, context) => {
+      const [option, value] = args.trim().toLowerCase().split(/\s+/);
+      if (option === 'compact' && (value === 'on' || value === 'off')) {
+        settings.compactTools = value === 'on';
+        saveSettings(settings);
+        context.ui.notify(`Compact tool rows: ${value}. Expand any row with the tool-expand key.`, 'info');
+        return;
+      }
+      context.ui.notify('Command colors: enabled. Code and diff cards; consistent shell-command colors; red failure labels. '
+        + `Compact tool rows: ${settings.compactTools ? 'on' : 'off'} (/command-colors compact on|off).`, 'info');
     },
   });
   pi.registerToolRenderer((name, next) => {
@@ -64,6 +76,9 @@ export default function completedCommandColors(pi: ExtensionAPI) {
         const shellFile = name === 'write' && context.argsComplete && typeof input.path === 'string' && getLanguageFromPath(input.path) === 'bash';
         const content = shellFile && original.renderShell !== 'self' ? shellFileCommands(component, theme) : component;
         let displayed: Component = original.renderShell !== 'self' && typeof source === 'string' && source.length ? codeCard(content, theme) : content;
+        if (name === 'edit' && EditDiffCard.supports(component)) {
+          displayed = new EditDiffCard(component, theme, typeof input.path === 'string' ? input.path : undefined, context.outputPad);
+        }
         if (context.isError) {
           const failed = new Container();
           failed.addChild(new Text(theme.fg('error', '✗ Failed'), 0, 0));
@@ -73,18 +88,28 @@ export default function completedCommandColors(pi: ExtensionAPI) {
         if (displayed !== component) nativeComponents.set(displayed, component);
         return displayed;
       },
-      ...((name === 'read' || name === 'edit') && original.renderResult ? {
+      ...(['read', 'edit', 'bash'].includes(name) && original.renderResult ? {
         renderResult(result, options, theme, context) {
           const previous = context.lastComponent && nativeComponents.get(context.lastComponent);
           const nativeContext = previous ? { ...context, lastComponent: previous } : context;
           const component = original.renderResult!(result, options, theme, nativeContext);
-          const hasImage = result.content.some(part => part.type === 'image');
-          const source = name === 'read' ? result.content.some(part => part.type === 'text') : typeof result.details?.diff === 'string';
-          if (original.renderShell === 'self' || context.isError || hasImage || !source) return component;
+          if (original.renderShell === 'self' || context.isError) return component;
           const input = (context.args && typeof context.args === 'object' ? context.args : {}) as Record<string, unknown>;
-          const shellFile = name === 'read' && typeof input.path === 'string' && getLanguageFromPath(input.path) === 'bash';
-          const displayed = codeCard(shellFile ? shellFileCommands(component, theme) : component, theme);
-          nativeComponents.set(displayed, component);
+          const path = typeof input.path === 'string' ? input.path : undefined;
+          let displayed: Component = component;
+          if (name === 'bash') {
+            if (settings.compactTools && !options.expanded && !options.isPartial) {
+              displayed = compactBashSummary(result, context.durationMs, theme, context.keyText('app.tools.expand'));
+            }
+          } else if (name === 'edit') {
+            const diff = (result.details as { diff?: unknown } | undefined)?.diff;
+            const shown = (component as { children?: unknown[] }).children?.length;
+            if (typeof diff === 'string' && shown) displayed = new DiffResultCard(diff, theme, path);
+          } else if (!result.content.some(part => part.type === 'image') && result.content.some(part => part.type === 'text')) {
+            const shellFile = path !== undefined && getLanguageFromPath(path) === 'bash';
+            displayed = codeCard(shellFile ? shellFileCommands(component, theme) : component, theme);
+          }
+          if (displayed !== component) nativeComponents.set(displayed, component);
           return displayed;
         },
       } : {}),

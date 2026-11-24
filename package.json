@@ -1,6 +1,6 @@
 {
   "name": "pi-jetbrains-transparent",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Transparent chat, gray code cards and JetBrains-inspired syntax colors for Pi.",
   "type": "module",
   "license": "MIT",
@@ -24,7 +24,11 @@
     "markdown.ts",
     "syntax.ts",
     "cli-words.mjs",
-    "plain-text.ts"
+    "plain-text.ts",
+    "diff.ts",
+    "compact.ts",
+    "settings.ts",
+    "CHANGELOG.md"
   ],
   "pi": {
     "extensions": [

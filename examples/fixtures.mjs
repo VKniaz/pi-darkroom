@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, copyFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, copyFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { loadPiSdk } from '../scripts/pi-sdk.mjs';
@@ -73,6 +73,41 @@ export async function buildFixtures() {
           }),
         });
         const plainLines = plainComponent.render(126);
+        const diffFile = join(dir, 'greeting.py');
+        await writeFile(diffFile, 'from dataclasses import dataclass\n\n\n@dataclass\nclass Greeting:\n    name: str\n    retries: int = 3\n\n    def render(self) -> str:\n        return "Hello " + self.name\n');
+        const editArgs = Object.freeze({ path: diffFile, edits: [
+          { oldText: '    retries: int = 3', newText: '    retries: int = 5\n    enabled: bool = True' },
+          { oldText: '        return "Hello " + self.name', newText: '        return f"Hello, {self.name}!"' },
+        ] });
+        const editRenderer = resolver('edit', () => sdk.createEditToolDefinition(dir));
+        const editState = {};
+        let previewReady;
+        const previewSettled = new Promise(resolve => { previewReady = resolve; });
+        const editContext = extra => ({ args: editArgs, toolCallId: 'diff-demo', invalidate() { previewReady(); }, state: editState,
+          cwd: dir, executionStarted: true, argsComplete: true, isPartial: false, expanded: false, showImages: false,
+          isError: false, durationMs: undefined, outputPad: 1, keyText: () => 'ctrl+o', keyHint: (_id, text) => 'ctrl+o ' + text, ...extra });
+        const firstEdit = editRenderer.renderCall(editArgs, activeTheme, editContext({}));
+        await previewSettled;
+        const diffLines = editRenderer.renderCall(editArgs, activeTheme, editContext({ lastComponent: firstEdit })).render(126)
+          .map(line => line.replaceAll(dir + '/', ''));
+        fixtures.push({ key: 'diff-card', title: 'Edit diff · syntax colors, tinted +/- lines, emphasized changes', language: 'python',
+          themeName, themeLabel, palette, kind: 'diff', group: 'diffs', cols: 126, rows: diffLines.length + 1,
+          source: editArgs.edits.map(edit => edit.newText).join('\n'), ansi: diffLines.map(line => line + '\x1b[0m').join('\r\n') });
+        const commandHandler = loaded.extensions.find(e => e.path === extensionPath).commands.get('command-colors').handler;
+        await commandHandler('compact on', { ui: { notify() {} } });
+        const bashRenderer = resolver('bash', () => sdk.createBashToolDefinition(dir));
+        const compactArgs = Object.freeze({ command: 'npm test' });
+        const compactRow = new sdk.ToolExecutionComponent('bash', 'compact-demo', compactArgs, { outputPad: 0 }, bashRenderer,
+          { requestRender() {} }, dir);
+        compactRow.setArgsComplete();
+        compactRow.markExecutionStarted();
+        compactRow.updateResult({ content: [{ type: 'text', text: Array.from({ length: 48 }, (_, i) => `ok ${i + 1} - synthetic test`).join('\n') }],
+          details: {}, isError: false, durationMs: 2300 }, false);
+        const compactLines = compactRow.render(126);
+        await commandHandler('compact off', { ui: { notify() {} } });
+        fixtures.push({ key: 'compact-row', title: 'Optional compact rows · /command-colors compact on', language: 'bash',
+          themeName, themeLabel, palette, kind: 'compact', group: 'diffs', cols: 126, rows: compactLines.length + 1,
+          source: compactArgs.command, ansi: compactLines.map(line => line + '\x1b[0m').join('\r\n') });
         fixtures.push({ key: 'plain-metadata', title: 'Plain text · UUID and timestamp accents', language: 'text',
           themeName, themeLabel, palette, kind: 'plain-metadata', group: 'structured', cols: 126,
           rows: plainLines.length + 1, source: plainSource,

@@ -32,6 +32,7 @@ try {
     ['darcula-overview.png', 'Classic Darcula. Quiet code cards.', 'Warm keywords, green strings and readable code — with the native execution path untouched.', fixtures.filter(f => f.group === 'overview' && f.themeName.startsWith('darcula'))],
     ['language-gallery.png', 'One palette. Many languages.', 'Native filename-based highlighting, plus readable command and embedded-script previews.', fixtures.filter(f => f.group === 'languages')],
     ['code-cards.png', 'Code gets structure. Chat stays clear.', 'Recognized code is colored. Unknown code stays plain. Generating code keeps the same calm background.', fixtures.filter(f => f.group === 'cards')],
+    ['diff-cards.png', 'Diffs you can actually read.', 'Language colors inside edits, tinted added/removed lines, emphasized changes — plus optional one-line tool rows.', fixtures.filter(f => f.group === 'diffs')],
     ['plain-text.png', 'Readable text. Important details stand out.', 'Brighter plain text with UUID and formatted timestamp accents. Synthetic data only.', fixtures.filter(f => f.group === 'structured')],
     ['before-after.png', 'Same command. Clearer preview.', 'The exact same synthetic SSH command, rendered with native Pi and with the plugin. Nothing executed.', fixtures.filter(f => f.group === 'comparison')],
   ];

@@ -44,6 +44,17 @@
     "font": "JetBrains Mono"
   },
   {
+    "file": "diff-cards.png",
+    "width": 1440,
+    "height": 1207,
+    "themes": [
+      "jetbrains-dark-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  },
+  {
     "file": "plain-text.png",
     "width": 1440,
     "height": 774,

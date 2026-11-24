@@ -13,6 +13,8 @@ Transparent conversation, quiet gray code cards, and JetBrains-inspired colors f
 - **Consistent commands:** executable names such as `npm`, `git`, `gh`, `docker`, and custom commands share the keyword color in shell previews. Arguments, strings, comments, and runtime output keep their own styles.
 - **Readable scripts:** Bash commands and literal Python, Node.js, shell, and SSH-stdin heredocs.
 - **Native file previews:** Pi keeps its filename-based highlighting for JavaScript, TypeScript, Python, YAML, Java, JSON, shell, and other supported formats.
+- **Readable diffs:** `edit` previews keep the file's syntax colors, tint added/removed lines, and emphasize what changed within a line.
+- **Optional compact rows:** `/command-colors compact on` turns successful Bash results into one line; expand any row to see everything. Failures and running commands always show in full.
 - **Clear failures:** a red `✗ Failed` label, not a red message panel.
 
 This is display-only. It does not replace execution, add model tools, change providers or permissions, rewrite executed commands, or modify transcript text. Ordinary runtime output is not guessed to be source code.
@@ -25,7 +27,7 @@ pi install npm:pi-jetbrains-transparent
 
 Run `/reload`, then open `/settings` → **Theme** and select either theme. Arrow keys preview themes; Enter keeps the selection and Esc cancels.
 
-Run `/command-colors` to check that the renderer is enabled. If you previously installed a manual copy, disable that copy before installing this package to avoid duplicate renderers and commands.
+Run `/command-colors` to check that the renderer is enabled. `/command-colors compact on|off` switches compact tool rows; the choice is saved in `~/.pi/agent/pi-jetbrains-transparent.json`. If you previously installed a manual copy, disable that copy before installing this package to avoid duplicate renderers and commands.
 
 Requires Pi's renderer and Markdown-transformer APIs. Tested on **Pi 1.5.2 and 1.6.0 on macOS**; other platforms are not yet verified.
 
@@ -34,6 +36,8 @@ GitHub installation is also supported: `pi install git:github.com/VKniaz/pi-jetb
 ## Gallery
 
 [JetBrains Dark overview](docs/screenshots/jetbrains-overview.png) · [Darcula overview](docs/screenshots/darcula-overview.png) · [Same-command comparison](docs/screenshots/before-after.png) · [Failure state](docs/screenshots/failure-state.png) · [Plain-text accents](docs/screenshots/plain-text.png)
+
+![Edit diffs with syntax colors and optional compact rows](docs/screenshots/diff-cards.png)
 
 ![Multiple language previews](docs/screenshots/language-gallery.png)
 
@@ -46,6 +50,7 @@ These are real browser captures of native Pi components rendered in an isolated 
 - Complex or unclosed shell heredocs retain Bash highlighting; arbitrary quoted SSH commands are not decoded or reformatted. Prefer readable multiline stdin scripts for the best previews.
 - Commands over 50,000 characters remain plain. Rendering never truncates or changes the command itself.
 - Self-framed/custom tool components and tools without registered call renderers may keep their own presentation. Image results are not wrapped as code.
+- Diff cards read the native edit preview; if a future Pi version changes that internal shape, edits fall back to Pi's own diff rendering.
 - Dark themes use charcoal cards; light themes use light gray. The companion themes keep normal and error message backgrounds transparent.
 
 ## Remove

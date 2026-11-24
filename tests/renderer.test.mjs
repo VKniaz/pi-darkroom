@@ -76,8 +76,11 @@ test('adds display-only rendering and an activation check without tools or execu
   assert.deepEqual([...extension.handlers.keys()], ['session_start']);
   assert.ok(extension.commands.has('command-colors'));
   const wrapped = renderer();
-  assert.equal(wrapped.renderResult, native.renderResult);
   assert.equal(wrapped.renderShell, native.renderShell);
+  const sample = { content: [{ type: 'text', text: 'one\ntwo' }], details: {} };
+  const args = { command: 'printf demo' };
+  assert.equal(rendered(wrapped.renderResult(sample, { expanded: false, isPartial: false }, theme(), context(args))),
+    rendered(native.renderResult(sample, { expanded: false, isPartial: false }, theme(), context(args))));
 });
 
 test('completed Bash commands and embedded Python receive real syntax colors without changing input', () => {

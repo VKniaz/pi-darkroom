@@ -9,13 +9,13 @@ test('visuals use both real themes, multiple formats and an explicit synthetic f
   for (const language of ['python', 'javascript', 'typescript', 'yaml', 'json', 'java', 'bash']) {
     assert.ok(fixtures.some(f => f.language === language), 'Missing language: ' + language);
   }
-  for (const kind of ['markdown-known', 'markdown-unknown', 'markdown-streaming']) {
+  for (const kind of ['markdown-known', 'markdown-unknown', 'markdown-streaming', 'diff', 'compact']) {
     assert.ok(fixtures.some(f => f.kind === kind), 'Missing card state: ' + kind);
   }
   assert.ok(fixtures.some(f => f.kind === 'failure' && f.ansi.includes('✗ Failed')));
   for (const fixture of fixtures) {
     for (const [color] of fixture.ansi.matchAll(/\x1b\[48;[0-9;]+m/g)) {
-      assert.equal(color, '\x1b[48;2;37;38;42m', 'Only neutral gray code cards may have a fill');
+      assert.ok(['\x1b[48;2;37;38;42m', '\x1b[48;2;39;56;44m', '\x1b[48;2;62;40;42m', '\x1b[48;2;52;82;60m', '\x1b[48;2;95;52;55m'].includes(color), 'Only card and diff tints may have a fill: ' + JSON.stringify(color));
     }
     assert.ok(!/\/Users\/|\/var\/folders\/|knyazevboba|adobe/i.test(fixture.ansi));
   }
