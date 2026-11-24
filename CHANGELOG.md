@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.2] - 2026-11-24
+
+### Added
+- `/copy-code` copies the exact source of the latest code block to the clipboard: no fence lines, indentation or padding spaces. `/copy-code 2` copies the block before it. Selecting code with the mouse copies the terminal layout too, which is why this exists.
+
 ## [0.3.1] - 2026-11-24
 
 ### Changed

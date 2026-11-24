@@ -484,3 +484,21 @@ test('structured text accents do not override strings in recognized programming 
   assert.ok(output.includes('38;2;106;171;115'));
   assert.ok(!output.includes('\x1b[38;2;207;142;109m' + id));
 });
+
+test('/copy-code reports when there is nothing to copy instead of touching the clipboard', async () => {
+  const notices = [];
+  await extension.commands.get('copy-code').handler('', {
+    ui: { notify: (text, level) => notices.push([text, level]) },
+    sessionManager: { getBranch: () => [] },
+  });
+  assert.match(notices[0][0], /no code block/i);
+});
+
+test('/copy-code rejects invalid positions', async () => {
+  const notices = [];
+  await extension.commands.get('copy-code').handler('zero', {
+    ui: { notify: (text, level) => notices.push([text, level]) },
+    sessionManager: { getBranch: () => [] },
+  });
+  assert.match(notices[0][0], /usage/i);
+});

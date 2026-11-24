@@ -1,4 +1,4 @@
-import { getLanguageFromPath, type ExtensionAPI, type Theme } from '@earendil-works/pi-coding-agent';
+import { copyToClipboard, getLanguageFromPath, type ExtensionAPI, type Theme } from '@earendil-works/pi-coding-agent';
 import { Container, Text, type Component } from '@earendil-works/pi-tui';
 import { highlightCommand } from './highlight.mjs';
 import { codeCard } from './code-cards.ts';
@@ -7,6 +7,7 @@ import { syntaxCode, shellFileCommands } from './syntax.ts';
 import { EditDiffCard, DiffResultCard } from './diff.ts';
 import { compactBashSummary } from './compact.ts';
 import { loadSettings, saveSettings } from './settings.ts';
+import { pickCodeBlock } from './copy-code.mjs';
 
 const MAX_HIGHLIGHT_CHARACTERS = 50_000;
 type HighlightCache = { command: string; colors: object; mode: string; body: string };
@@ -51,6 +52,25 @@ export default function completedCommandColors(pi: ExtensionAPI) {
       }
       context.ui.notify('Command colors: enabled. Code and diff cards; consistent shell-command colors; red failure labels. '
         + `Compact tool rows: ${settings.compactTools ? 'on' : 'off'} (/command-colors compact on|off).`, 'info');
+    },
+  });
+  pi.registerCommand('copy-code', {
+    description: 'Copy the exact source of the latest code block (or /copy-code 2 for the one before)',
+    handler: async (args, context) => {
+      const text = args.trim();
+      const position = text === '' ? 1 : Number(text);
+      if (!Number.isInteger(position) || position < 1) {
+        context.ui.notify('Usage: /copy-code [n] — n = 1 for the latest code block, 2 for the one before, …', 'warning');
+        return;
+      }
+      const block = pickCodeBlock(context.sessionManager.getBranch(), position);
+      if (!block) {
+        context.ui.notify(position === 1 ? 'No code block to copy yet.' : `No code block #${position} — fewer code blocks in this conversation.`, 'warning');
+        return;
+      }
+      await copyToClipboard(block.code);
+      const lines = block.code.split('\n').length;
+      context.ui.notify(`Copied ${block.language || 'code'} block (${lines} line${lines === 1 ? '' : 's'}) to the clipboard.`, 'info');
     },
   });
   pi.registerToolRenderer((name, next) => {

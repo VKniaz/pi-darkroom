@@ -15,6 +15,7 @@ Transparent conversation, readable diff and code cards, and IDE-style syntax col
 - **Native file previews:** Pi keeps its filename-based highlighting for JavaScript, TypeScript, Python, YAML, Java, JSON, shell, and other supported formats.
 - **Readable diffs:** `edit` previews keep the file's syntax colors, tint added/removed lines, and emphasize what changed within a line.
 - **Optional compact rows:** `/command-colors compact on` turns successful Bash results into one line; expand any row to see everything. Failures and running commands always show in full.
+- **Clean copying:** `/copy-code` copies the exact source of the latest code block (`/copy-code 2` for the one before), without the indentation and padding a mouse selection picks up.
 - **Clear failures:** a red `✗ Failed` label, not a red message panel.
 
 This is display-only. It does not replace execution, add model tools, change providers or permissions, rewrite executed commands, or modify transcript text. Ordinary runtime output is not guessed to be source code.
