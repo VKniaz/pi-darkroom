@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.3] - 2026-11-24
+
+### Changed
+- Long lines in command cards and Markdown code cards now wrap with a hanging indent, so a wrapped continuation no longer looks like a new command.
+
 ## [0.3.2] - 2026-11-24
 
 ### Added

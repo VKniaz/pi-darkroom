@@ -1,6 +1,6 @@
 {
   "name": "pi-darkroom",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Transparent chat, readable diff and code cards, and IDE-style syntax colors for Pi.",
   "type": "module",
   "license": "MIT",
@@ -29,6 +29,7 @@
     "diff.ts",
     "compact.ts",
     "settings.ts",
+    "wrap.ts",
     "CHANGELOG.md",
     "copy-code.mjs"
   ],

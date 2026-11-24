@@ -1,6 +1,7 @@
 import { getLanguageFromPath, highlightCode, type Theme, type MarkdownTransformContext } from '@earendil-works/pi-coding-agent';
-import { visibleWidth, wrapTextWithAnsi } from '@earendil-works/pi-tui';
+import { visibleWidth } from '@earendil-works/pi-tui';
 import { paintCodeLine } from './code-cards.ts';
+import { wrapWithHangingIndent } from './wrap.ts';
 import { highlightCommand } from './highlight.mjs';
 import { syntaxCode } from './syntax.ts';
 import { plainTextLines } from './plain-text.ts';
@@ -23,7 +24,7 @@ function cardLines(source: string, info: string, width: number, streaming: boole
     : language ? source.split('\n').map(line => theme.fg('text', line)) : plainTextLines(source, theme);
   const innerWidth = width - 2;
   const blank = paintCodeLine(' '.repeat(width), theme);
-  const body = lines.flatMap(line => wrapTextWithAnsi(line, innerWidth).map(part =>
+  const body = lines.flatMap(line => wrapWithHangingIndent(line, innerWidth).map(part =>
     paintCodeLine(' ' + part + ' '.repeat(Math.max(0, innerWidth - visibleWidth(part))) + ' ', theme)));
   return [blank, ...body, blank];
 }

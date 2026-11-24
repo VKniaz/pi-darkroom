@@ -2,6 +2,7 @@ import { copyToClipboard, getLanguageFromPath, type ExtensionAPI, type Theme } f
 import { Container, Text, type Component } from '@earendil-works/pi-tui';
 import { highlightCommand } from './highlight.mjs';
 import { codeCard } from './code-cards.ts';
+import { HangingText } from './wrap.ts';
 import { markdownCodeCards } from './markdown.ts';
 import { syntaxCode, shellFileCommands } from './syntax.ts';
 import { EditDiffCard, DiffResultCard } from './diff.ts';
@@ -23,7 +24,9 @@ function colorCommand(component: Text, command: string, timeout: unknown, theme:
     cache.set(component, formatted);
   }
   const suffix = timeout ? theme.fg('muted', ` (timeout ${timeout}s)`) : '';
-  component.setText(theme.fg('toolTitle', '$ ') + formatted.body + suffix);
+  const text = theme.fg('toolTitle', '$ ') + formatted.body + suffix;
+  component.setText(text);
+  return text;
 }
 
 export default function completedCommandColors(pi: ExtensionAPI) {
@@ -84,17 +87,19 @@ export default function completedCommandColors(pi: ExtensionAPI) {
         const component = original.renderCall!(args, theme, nativeContext);
         const input = (args && typeof args === 'object' ? args : {}) as Record<string, unknown>;
         const command = input.command;
+        let colored: string | undefined;
         if (name === 'bash' && context.argsComplete && component instanceof Text &&
             typeof command === 'string' && command && command.length <= MAX_HIGHLIGHT_CHARACTERS) {
           try {
-            colorCommand(component, command, input.timeout, theme, cache);
+            colored = colorCommand(component, command, input.timeout, theme, cache);
           } catch {
             // A display failure must preserve the native command, not hide it or affect execution.
           }
         }
         const source = name === 'bash' && component instanceof Text ? input.command : name === 'write' ? input.content : name === 'codemode' ? input.code : undefined;
         const shellFile = name === 'write' && context.argsComplete && typeof input.path === 'string' && getLanguageFromPath(input.path) === 'bash';
-        const content = shellFile && original.renderShell !== 'self' ? shellFileCommands(component, theme) : component;
+        const content = colored !== undefined ? new HangingText(colored)
+          : shellFile && original.renderShell !== 'self' ? shellFileCommands(component, theme) : component;
         let displayed: Component = original.renderShell !== 'self' && typeof source === 'string' && source.length ? codeCard(content, theme) : content;
         if (name === 'edit' && EditDiffCard.supports(component)) {
           displayed = new EditDiffCard(component, theme, typeof input.path === 'string' ? input.path : undefined, context.outputPad);

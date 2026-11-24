@@ -502,3 +502,35 @@ test('/copy-code rejects invalid positions', async () => {
   });
   assert.match(notices[0][0], /usage/i);
 });
+
+const cardBody = (component, width) => strip(rendered(component, width)).split('\n').slice(1, -1).map(line => line.slice(1).trimEnd());
+const withoutSpaces = text => text.replace(/\s+/g, '');
+
+test('wrapped command lines continue with a hanging indent instead of restarting at the card edge', () => {
+  const command = 'herdr pane read "$HERDR_PANE_ID" --source recent --format ansi > /tmp/capture.ansi\n'
+    + '  echo one two three four five six seven eight nine ten';
+  const args = { command };
+  const row = renderer().renderCall(args, theme(), context(args));
+  const lines = cardBody(row, 40);
+  const echo = lines.findIndex(line => line.startsWith('  echo'));
+  assert.ok(lines[0].startsWith('$ herdr'));
+  assert.ok(echo > 1, 'the first command should wrap before the echo line');
+  for (const line of lines.slice(1, echo)) assert.match(line, /^ {2}\S/);
+  assert.ok(echo < lines.length - 1, 'the echo line should wrap too');
+  for (const line of lines.slice(echo + 1)) assert.match(line, /^ {4}\S/);
+  assert.equal(withoutSpaces(lines.join('')), withoutSpaces('$ ' + command));
+  for (const line of row.render(40)) assert.ok(visibleWidth(line) <= 40);
+});
+
+test('wrapped Markdown code lines continue with a hanging indent', () => {
+  theme();
+  const source = 'npm test && git status --short && gh pr list --limit 3 --state open';
+  const lines = markdownPreview('```bash\n' + source + '\n```', false, 30).map(line => strip(line));
+  const start = lines.findIndex(line => line.includes('npm test'));
+  const end = lines.findIndex((line, index) => index > start && !line.trim());
+  const body = lines.slice(start, end).map(line => line.trimEnd());
+  const indent = body[0].length - body[0].trimStart().length;
+  assert.ok(body.length > 1, 'the command should wrap at 30 columns');
+  for (const line of body.slice(1)) assert.equal(line.length - line.trimStart().length, indent + 2);
+  assert.equal(withoutSpaces(body.join('')), withoutSpaces(source));
+});
