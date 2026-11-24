@@ -86,10 +86,27 @@ export async function buildFixtures() {
         const editContext = extra => ({ args: editArgs, toolCallId: 'diff-demo', invalidate() { previewReady(); }, state: editState,
           cwd: dir, executionStarted: true, argsComplete: true, isPartial: false, expanded: false, showImages: false,
           isError: false, durationMs: undefined, outputPad: 1, keyText: () => 'ctrl+o', keyHint: (_id, text) => 'ctrl+o ' + text, ...extra });
+        const nativeEdit = sdk.createEditToolDefinition(dir);
+        const nativeState = {};
+        let nativeReady;
+        const nativeSettled = new Promise(resolve => { nativeReady = resolve; });
+        const nativeContext = extra => ({ ...editContext(extra), state: nativeState, invalidate() { nativeReady(); } });
+        const nativeFirst = nativeEdit.renderCall(editArgs, activeTheme, nativeContext({}));
+        await nativeSettled;
+        const nativeDiffLines = nativeEdit.renderCall(editArgs, activeTheme, nativeContext({ lastComponent: nativeFirst })).render(110)
+          .map(line => line.replaceAll(dir + '/', ''));
+        fixtures.push({ key: 'native-diff', title: 'Plain Pi · edit diff', language: 'python', themeName, themeLabel, palette,
+          kind: 'native-diff', group: 'demo-diff-before', cols: 110, rows: nativeDiffLines.length + 1,
+          source: '', ansi: nativeDiffLines.map(line => line + '\x1b[0m').join('\r\n') });
         const firstEdit = editRenderer.renderCall(editArgs, activeTheme, editContext({}));
         await previewSettled;
         const diffLines = editRenderer.renderCall(editArgs, activeTheme, editContext({ lastComponent: firstEdit })).render(126)
           .map(line => line.replaceAll(dir + '/', ''));
+        const demoDiffLines = editRenderer.renderCall(editArgs, activeTheme, editContext({ lastComponent: firstEdit })).render(110)
+          .map(line => line.replaceAll(dir + '/', ''));
+        fixtures.push({ key: 'demo-diff', title: 'pi-darkroom · edit diff', language: 'python', themeName, themeLabel, palette,
+          kind: 'demo-diff', group: 'demo-diff-after', cols: 110, rows: demoDiffLines.length + 1,
+          source: '', ansi: demoDiffLines.map(line => line + '\x1b[0m').join('\r\n') });
         fixtures.push({ key: 'diff-card', title: 'Edit diff · syntax colors, tinted +/- lines, emphasized changes', language: 'python',
           themeName, themeLabel, palette, kind: 'diff', group: 'diffs', cols: 126, rows: diffLines.length + 1,
           source: editArgs.edits.map(edit => edit.newText).join('\n'), ansi: diffLines.map(line => line + '\x1b[0m').join('\r\n') });

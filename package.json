@@ -43,7 +43,8 @@
   "scripts": {
     "test": "PI_OFFLINE=1 node --test tests/*.test.mjs",
     "screenshots": "node scripts/capture-gallery.mjs",
-    "typecheck": "node scripts/typecheck.mjs"
+    "typecheck": "node scripts/typecheck.mjs",
+    "demo": "node scripts/capture-demo.mjs"
   },
   "engines": {
     "node": ">=22.19.0"

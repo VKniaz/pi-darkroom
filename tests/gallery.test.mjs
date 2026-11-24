@@ -9,7 +9,7 @@ test('visuals use both real themes, multiple formats and an explicit synthetic f
   for (const language of ['python', 'javascript', 'typescript', 'yaml', 'json', 'java', 'bash']) {
     assert.ok(fixtures.some(f => f.language === language), 'Missing language: ' + language);
   }
-  for (const kind of ['markdown-known', 'markdown-unknown', 'markdown-streaming', 'diff', 'compact']) {
+  for (const kind of ['markdown-known', 'markdown-unknown', 'markdown-streaming', 'diff', 'compact', 'native-diff', 'demo-diff']) {
     assert.ok(fixtures.some(f => f.kind === kind), 'Missing card state: ' + kind);
   }
   assert.ok(fixtures.some(f => f.kind === 'failure' && f.ansi.includes('✗ Failed')));

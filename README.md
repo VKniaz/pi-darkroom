@@ -2,7 +2,7 @@
 
 Transparent conversation, readable diff and code cards, and IDE-style syntax colors for [Pi](https://pi.dev/). The palettes are inspired by JetBrains IDE dark themes.
 
-![Recognized, unknown, and streaming code cards](docs/screenshots/code-cards.png)
+![Plain Pi vs pi-darkroom: edit diff and command preview](docs/screenshots/demo.gif)
 
 ## What you get
 
@@ -34,6 +34,8 @@ Requires Pi's renderer and Markdown-transformer APIs. Tested on **Pi 1.5.2 and 1
 GitHub installation is also supported: `pi install git:github.com/VKniaz/pi-darkroom`. The npm package includes Pi discovery metadata; catalog visibility depends on indexing.
 
 ## Gallery
+
+![Recognized, unknown, and streaming code cards](docs/screenshots/code-cards.png)
 
 [Darkroom Dark overview](docs/screenshots/dark-overview.png) · [Darkroom Classic overview](docs/screenshots/classic-overview.png) · [Same-command comparison](docs/screenshots/before-after.png) · [Failure state](docs/screenshots/failure-state.png) · [Plain-text accents](docs/screenshots/plain-text.png)
 
