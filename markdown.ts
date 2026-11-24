@@ -2,6 +2,8 @@ import { getLanguageFromPath, highlightCode, type Theme, type MarkdownTransformC
 import { visibleWidth, wrapTextWithAnsi } from '@earendil-works/pi-tui';
 import { paintCodeLine } from './code-cards.ts';
 import { highlightCommand } from './highlight.mjs';
+import { syntaxCode } from './syntax.ts';
+import { plainTextLines } from './plain-text.ts';
 
 const LANGUAGE_EXTENSIONS: Record<string, string> = {
   javascript: 'js', typescript: 'ts', python: 'py', bash: 'sh', shell: 'sh',
@@ -17,8 +19,8 @@ function languageFromInfo(info: string) {
 function cardLines(source: string, info: string, width: number, streaming: boolean, theme: Theme) {
   const language = languageFromInfo(info);
   const lines = !streaming && language && source.length <= 50_000
-    ? (language === 'bash' ? highlightCommand(source, highlightCode) : highlightCode(source, language))
-    : source.split('\n').map(line => theme.fg('text', line));
+    ? (language === 'bash' ? highlightCommand(source, (code, lang) => syntaxCode(code, lang, theme)) : highlightCode(source, language))
+    : language ? source.split('\n').map(line => theme.fg('text', line)) : plainTextLines(source, theme);
   const innerWidth = width - 2;
   const blank = paintCodeLine(' '.repeat(width), theme);
   const body = lines.flatMap(line => wrapTextWithAnsi(line, innerWidth).map(part =>

@@ -12,6 +12,8 @@ function scriptLanguage(interpreter) {
   if (SHELL.test(interpreter) || (SSH.test(interpreter) && REMOTE_STDIN.test(interpreter))) return 'bash';
 }
 
+export function heredocOpener(line) { return HEREDOC.exec(line); }
+
 function closingLine(lines, start, delimiter, stripTabs) {
   for (let index = start; index < lines.length; index++) {
     const line = lines[index].replace(/\r$/, '');
@@ -33,7 +35,7 @@ export function highlightCommand(command, highlight, depth = 0) {
   const lines = command.split('\n');
   for (let index = 0; index < lines.length; index++) {
     if (/^[ \t]*#/.test(lines[index])) continue;
-    const opener = HEREDOC.exec(lines[index]);
+    const opener = heredocOpener(lines[index]);
     if (!opener) continue;
     const interpreter = lines[index].slice(0, opener.index).trim();
     if (interpreter.includes('<')) return shell;

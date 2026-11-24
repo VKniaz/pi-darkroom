@@ -24,7 +24,7 @@
   {
     "file": "language-gallery.png",
     "width": 1440,
-    "height": 2131,
+    "height": 2160,
     "themes": [
       "jetbrains-dark-transparent"
     ],
@@ -36,6 +36,17 @@
     "file": "code-cards.png",
     "width": 1440,
     "height": 1004,
+    "themes": [
+      "jetbrains-dark-transparent"
+    ],
+    "synthetic": true,
+    "renderer": "Native Pi components in xterm.js",
+    "font": "JetBrains Mono"
+  },
+  {
+    "file": "plain-text.png",
+    "width": 1440,
+    "height": 774,
     "themes": [
       "jetbrains-dark-transparent"
     ],

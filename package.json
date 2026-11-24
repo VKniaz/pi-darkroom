@@ -22,7 +22,10 @@
     "NOTICE.md",
     "docs/screenshots",
     "code-cards.ts",
-    "markdown.ts"
+    "markdown.ts",
+    "syntax.ts",
+    "cli-words.mjs",
+    "plain-text.ts"
   ],
   "pi": {
     "extensions": [

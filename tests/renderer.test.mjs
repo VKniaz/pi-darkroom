@@ -418,3 +418,66 @@ test('self-framed file result renderers retain their own component without a sec
   const result = { content: [{ type: 'text', text: 'const x = 1;' }], details: {} };
   assert.equal(wrapped.renderResult(result, { expanded: true, isPartial: false }, theme(), context(args)), component);
 });
+
+
+test('Bash executable names including npm/git/gh and custom commands share the keyword color', () => {
+  const args = { command: 'npm test\ngit status\ngh pr list\nmy-build-tool --help' };
+  const output = rendered(renderer().renderCall(args, theme(), context(args)));
+  for (const word of ['npm', 'git', 'gh', 'my-build-tool']) {
+    assert.ok(output.includes('\x1b[38;2;207;142;109m' + word), word + ' must use the keyword color');
+  }
+  assert.equal(args.command, 'npm test\ngit status\ngh pr list\nmy-build-tool --help');
+});
+
+test('command-name colors do not leak into embedded Python variables or string arguments', () => {
+  const args = { command: "python3 - <<'PY'\ngit = \"hello\"\nPY\nprintf '%s' git" };
+  const output = rendered(renderer().renderCall(args, theme(), context(args)));
+  assert.ok(output.includes('\x1b[38;2;207;142;109mprintf'));
+  assert.ok(!output.includes('\x1b[38;2;207;142;109mgit'));
+});
+
+test('shell file read/write previews use the same executable-name colors', () => {
+  const activeTheme = theme();
+  const args = { path: 'example.sh', content: 'npm test\ngit status\ngh pr list\n' };
+  const write = sdk.createWriteToolDefinition(dir);
+  const wrappedWrite = extension.toolRenderers[0]('write', () => write);
+  const read = sdk.createReadToolDefinition(dir);
+  const wrappedRead = extension.toolRenderers[0]('read', () => read);
+  const call = rendered(wrappedWrite.renderCall(args, activeTheme, context(args)));
+  const result = rendered(wrappedRead.renderResult({ content: [{ type: 'text', text: args.content }], details: {} },
+    { expanded: true, isPartial: false }, activeTheme, context(args)));
+  for (const output of [call, result]) {
+    for (const word of ['npm', 'git', 'gh']) assert.ok(output.includes('\x1b[38;2;207;142;109m' + word));
+  }
+});
+
+test('Bash Markdown cards apply executable colors while unknown code remains plain', () => {
+  theme();
+  const known = markdownPreview('```bash\nnpm test\ngit status\ngh pr list\n```').join('\n');
+  const unknown = markdownPreview('```unknown-demo\nnpm test\ngit status\n```').join('\n');
+  for (const word of ['npm', 'git', 'gh']) assert.ok(known.includes('\x1b[38;2;207;142;109m' + word));
+  assert.ok(!unknown.includes('\x1b[38;2;207;142;109mnpm'));
+});
+
+
+test('plain-text cards use brighter body text and orange UUID/timestamp accents', () => {
+  theme();
+  const id = '123e4567-e89b-42d3-a456-426614174000';
+  const source = '```text\nSynthetic event ' + id + '\nStarted 2030-01-02T03:04:05.678Z\nRange 03:04:05.001–03:04:06.002\nHTTP 202; count 65\n```';
+  const output = markdownPreview(source, false, 140).join('\n');
+  assert.ok(output.includes('\x1b[38;2;230;232;237mSynthetic event '));
+  assert.ok(output.includes('\x1b[38;2;207;142;109m' + id));
+  assert.ok(output.includes('\x1b[38;2;207;142;109m2030-01-02T03:04:05.678Z'));
+  assert.ok(output.includes('\x1b[38;2;207;142;109m03:04:05.001'));
+  assert.ok(!output.includes('\x1b[38;2;207;142;109m202'));
+  assert.ok(!output.includes('\x1b[38;2;207;142;109m65'));
+  assert.ok(strip(output).includes('HTTP 202; count 65'));
+});
+
+test('structured text accents do not override strings in recognized programming languages', () => {
+  theme();
+  const id = '123e4567-e89b-42d3-a456-426614174000';
+  const output = markdownPreview('```js\nconst id = "' + id + '";\n```', false, 140).join('\n');
+  assert.ok(output.includes('38;2;106;171;115'));
+  assert.ok(!output.includes('\x1b[38;2;207;142;109m' + id));
+});

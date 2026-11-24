@@ -8,7 +8,9 @@ Transparent conversation, quiet gray code cards, and JetBrains-inspired colors f
 
 - **Two themes:** `jetbrains-dark-transparent` and `darcula-transparent`.
 - **Consistent code cards:** recognized code gets syntax colors; unknown code stays plain and readable on the same gray background.
+- **Readable plain text:** brighter text in plain/unknown Markdown cards, with UUIDs and formatted dates/times accented in the keyword color. These are visual pattern matches, not data validation. Programming-language strings retain their syntax colors.
 - **Stable generation:** code keeps its card while it streams. Completed commands and Markdown blocks get the enhanced highlighting.
+- **Consistent commands:** executable names such as `npm`, `git`, `gh`, `docker`, and custom commands share the keyword color in shell previews. Arguments, strings, comments, and runtime output keep their own styles.
 - **Readable scripts:** Bash commands and literal Python, Node.js, shell, and SSH-stdin heredocs.
 - **Native file previews:** Pi keeps its filename-based highlighting for JavaScript, TypeScript, Python, YAML, Java, JSON, shell, and other supported formats.
 - **Clear failures:** a red `✗ Failed` label, not a red message panel.

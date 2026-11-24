@@ -4,7 +4,7 @@ import { join, resolve } from 'node:path';
 import { loadPiSdk } from '../scripts/pi-sdk.mjs';
 
 const remoteShell = "ssh demo-host 'bash -s' <<'REMOTE'\nset -eu\n\npython3 - <<'PY'\nfrom pathlib import Path\n\nname = \"hello\"\nif name:\n    print(name)\nPY\nREMOTE";
-const moduleScript = "node --input-type=module <<'JS'\nconst items = [\"one\", \"two\"];\n\nfor (const item of items) {\n  console.log(item);\n}\nJS";
+const moduleScript = "npm test\ngit status\ngh pr list\n\nnode --input-type=module <<'JS'\nconst items = [\"one\", \"two\"];\n\nfor (const item of items) {\n  console.log(item);\n}\nJS";
 const failureScript = "node --input-type=module <<'JS'\nthrow new Error(\"Demo failure\");\nJS";
 const samples = [
   ['javascript', 'JavaScript · .mjs / .js', 'example.mjs', 'export function greet(name) {\n  const message = "Hello, " + name;\n  return message;\n}\n'],
@@ -13,7 +13,7 @@ const samples = [
   ['yaml', 'YAML · .yaml / .yml', 'example.yaml', '# Configuration preview\nservice:\n  name: "hello"\n  enabled: true\n  retries: 3\n'],
   ['java', 'Java · .java', 'Example.java', 'public class Example {\n    private final String name = "hello";\n\n    public String greet() {\n        return name;\n    }\n}\n'],
   ['json', 'JSON · .json', 'example.json', '{\n  "name": "hello",\n  "enabled": true,\n  "retries": 3\n}\n'],
-  ['bash', 'Shell · .sh', 'example.sh', '# Keep scripts readable\nfor name in one two; do\n  printf "Hello, %s\\n" "$name"\ndone\n'],
+  ['bash', 'Shell · .sh', 'example.sh', '# Consistent command colors\nnpm test\ngit status\ngh pr list\ndocker ps\n'],
 ];
 
 export async function buildFixtures() {
@@ -62,10 +62,21 @@ export async function buildFixtures() {
           ansi: lines.map(line => line + '\x1b[0m').join('\r\n') });
       }
       add('remote-shell', 'Remote shell + embedded Python', 'python', 'bash', { command: remoteShell });
-      add('node-module', 'Node.js module script', 'javascript', 'bash', { command: moduleScript });
+      add('node-module', 'CLI commands + Node.js module', 'javascript', 'bash', { command: moduleScript });
       add('failure', 'Failure indicator · no red panel', 'bash', 'bash', { command: failureScript }, 'failure', 'overview', 126);
       if (modern) {
         const registration = loaded.extensions.find(e => e.path === extensionPath).markdownTransformer;
+        const plainSource = '```text\nSynthetic event summary\n\nRequest ID: 123e4567-e89b-42d3-a456-426614174000\nStarted: 2030-01-02 at 03:04:05.678 UTC\nFinished: 2030-01-02T03:04:06.789Z\nWindow: 03:04:05.001–03:04:06.002\n\nHTTP status: 202\nItem count: 65\nNo real service, customer or incident data is included.\n```';
+        const plainComponent = new tui.Markdown(plainSource, 0, 0, sdk.getMarkdownTheme(), undefined, {
+          transform: (text, availableWidth) => registration.transformer(text, {
+            messageType: 'assistant', isStreaming: false, availableWidth,
+          }),
+        });
+        const plainLines = plainComponent.render(126);
+        fixtures.push({ key: 'plain-metadata', title: 'Plain text · UUID and timestamp accents', language: 'text',
+          themeName, themeLabel, palette, kind: 'plain-metadata', group: 'structured', cols: 126,
+          rows: plainLines.length + 1, source: plainSource,
+          ansi: plainLines.map(line => line + '\x1b[0m').join('\r\n') });
         const cards = [
           ['markdown-known', 'Recognized language · Java', '```java\npublic class Example {\n    String name = "hello";\n}\n```', false],
           ['markdown-unknown', 'Unknown language · plain code', '```custom-dsl\npublic class hello = "value"\nuse your_own_syntax here\n```', false],

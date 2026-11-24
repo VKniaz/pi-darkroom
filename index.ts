@@ -1,8 +1,9 @@
-import { highlightCode, type ExtensionAPI, type Theme } from '@earendil-works/pi-coding-agent';
+import { getLanguageFromPath, type ExtensionAPI, type Theme } from '@earendil-works/pi-coding-agent';
 import { Container, Text, type Component } from '@earendil-works/pi-tui';
 import { highlightCommand } from './highlight.mjs';
 import { codeCard } from './code-cards.ts';
 import { markdownCodeCards } from './markdown.ts';
+import { syntaxCode, shellFileCommands } from './syntax.ts';
 
 const MAX_HIGHLIGHT_CHARACTERS = 50_000;
 type HighlightCache = { command: string; colors: object; mode: string; body: string };
@@ -13,7 +14,7 @@ function colorCommand(component: Text, command: string, timeout: unknown, theme:
   const mode = theme.getColorMode();
   let formatted = cache.get(component);
   if (!formatted || formatted.command !== command || formatted.colors !== colors || formatted.mode !== mode) {
-    const body = highlightCommand(command, highlightCode).map(line => theme.fg('text', line)).join('\n');
+    const body = highlightCommand(command, (source, language) => syntaxCode(source, language, theme)).map(line => theme.fg('text', line)).join('\n');
     formatted = { command, colors, mode, body };
     cache.set(component, formatted);
   }
@@ -37,7 +38,7 @@ export default function completedCommandColors(pi: ExtensionAPI) {
   pi.registerCommand('command-colors', {
     description: 'Check whether completed command colors are loaded',
     handler: async (_args, context) => {
-      context.ui.notify('Command colors: enabled. Gray code cards; metadata-based syntax colors; plain unknown code; red failure labels.', 'info');
+      context.ui.notify('Command colors: enabled. Gray code cards; consistent shell-command colors; plain unknown code; red failure labels.', 'info');
     },
   });
   pi.registerToolRenderer((name, next) => {
@@ -60,7 +61,9 @@ export default function completedCommandColors(pi: ExtensionAPI) {
           }
         }
         const source = name === 'bash' && component instanceof Text ? input.command : name === 'write' ? input.content : name === 'codemode' ? input.code : undefined;
-        let displayed: Component = original.renderShell !== 'self' && typeof source === 'string' && source.length ? codeCard(component, theme) : component;
+        const shellFile = name === 'write' && context.argsComplete && typeof input.path === 'string' && getLanguageFromPath(input.path) === 'bash';
+        const content = shellFile && original.renderShell !== 'self' ? shellFileCommands(component, theme) : component;
+        let displayed: Component = original.renderShell !== 'self' && typeof source === 'string' && source.length ? codeCard(content, theme) : content;
         if (context.isError) {
           const failed = new Container();
           failed.addChild(new Text(theme.fg('error', '✗ Failed'), 0, 0));
@@ -78,7 +81,9 @@ export default function completedCommandColors(pi: ExtensionAPI) {
           const hasImage = result.content.some(part => part.type === 'image');
           const source = name === 'read' ? result.content.some(part => part.type === 'text') : typeof result.details?.diff === 'string';
           if (original.renderShell === 'self' || context.isError || hasImage || !source) return component;
-          const displayed = codeCard(component, theme);
+          const input = (context.args && typeof context.args === 'object' ? context.args : {}) as Record<string, unknown>;
+          const shellFile = name === 'read' && typeof input.path === 'string' && getLanguageFromPath(input.path) === 'bash';
+          const displayed = codeCard(shellFile ? shellFileCommands(component, theme) : component, theme);
           nativeComponents.set(displayed, component);
           return displayed;
         },
