@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.1] - 2026-11-24
+
+### Changed
+- Your messages now use the theme's existing link blue, so they stand apart from assistant replies (white) and reasoning (dim gray) without adding a new color.
+
 ## [0.3.0] - 2026-11-24
 
 ### Changed

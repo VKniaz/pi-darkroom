@@ -1,6 +1,6 @@
 {
   "name": "pi-darkroom",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Transparent chat, readable diff and code cards, and IDE-style syntax colors for Pi.",
   "type": "module",
   "license": "MIT",
