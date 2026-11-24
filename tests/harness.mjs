@@ -7,14 +7,15 @@ import { loadPiSdk } from '../scripts/pi-sdk.mjs';
 process.env.COLORTERM = 'truecolor';
 process.env.TERM = 'xterm-256color';
 
-export async function createHarness() {
-  const dir = await mkdtemp(join(tmpdir(), 'pi-jb-harness-'));
+export async function createHarness({ seed = {} } = {}) {
+  const dir = await mkdtemp(join(tmpdir(), 'pi-darkroom-harness-'));
+  for (const [name, content] of Object.entries(seed)) await writeFile(join(dir, name), content);
   const previousAgentDir = process.env.PI_CODING_AGENT_DIR;
   process.env.PI_CODING_AGENT_DIR = dir;
   const { sdk, tui, nativeThemePath } = await loadPiSdk();
   await mkdir(join(dir, 'themes'));
   await mkdir(join(dir, 'themes-src'));
-  for (const name of ['jetbrains-dark-transparent']) {
+  for (const name of ['darkroom-dark']) {
     const json = await readFile(fileURLToPath(new URL(`../themes/${name}.json`, import.meta.url)), 'utf8');
     await writeFile(join(dir, 'themes', name + '.json'), json);
   }
@@ -36,7 +37,7 @@ export async function createHarness() {
   const themes = loader.getThemes().themes;
   return {
     dir, sdk, tui, extension,
-    theme(name = 'jetbrains-dark-transparent') {
+    theme(name = 'darkroom-dark') {
       sdk.initTheme(name, false);
       active = themes.find(t => t.name === name);
       return active;

@@ -1,21 +1,21 @@
 [
   {
-    "file": "jetbrains-overview.png",
+    "file": "dark-overview.png",
     "width": 1440,
     "height": 1323,
     "themes": [
-      "jetbrains-dark-transparent"
+      "darkroom-dark"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",
     "font": "JetBrains Mono"
   },
   {
-    "file": "darcula-overview.png",
+    "file": "classic-overview.png",
     "width": 1440,
     "height": 1323,
     "themes": [
-      "darcula-transparent"
+      "darkroom-classic"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",
@@ -26,7 +26,7 @@
     "width": 1440,
     "height": 2160,
     "themes": [
-      "jetbrains-dark-transparent"
+      "darkroom-dark"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",
@@ -37,7 +37,7 @@
     "width": 1440,
     "height": 1004,
     "themes": [
-      "jetbrains-dark-transparent"
+      "darkroom-dark"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",
@@ -48,7 +48,7 @@
     "width": 1440,
     "height": 1207,
     "themes": [
-      "jetbrains-dark-transparent"
+      "darkroom-dark"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",
@@ -59,7 +59,7 @@
     "width": 1440,
     "height": 774,
     "themes": [
-      "jetbrains-dark-transparent"
+      "darkroom-dark"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",
@@ -70,7 +70,7 @@
     "width": 1440,
     "height": 832,
     "themes": [
-      "jetbrains-dark-transparent"
+      "darkroom-dark"
     ],
     "synthetic": true,
     "renderer": "Native Pi components in xterm.js",

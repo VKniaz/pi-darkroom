@@ -1,6 +1,6 @@
 {
   "$schema": "https://pi.dev/schemas/theme.schema.json",
-  "name": "jetbrains-dark-transparent",
+  "name": "darkroom-dark",
   "appearance": "dark",
   "vars": {
     "text": "#BCBEC4",

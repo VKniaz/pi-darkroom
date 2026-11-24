@@ -28,8 +28,8 @@ try {
   await page.goto(origin);
   await page.waitForFunction(() => window.galleryReady === true);
   const groups = [
-    ['jetbrains-overview.png', 'JetBrains Dark, without the noise.', 'Transparent conversation. Gray code cards. Syntax colors without noisy error panels.', fixtures.filter(f => f.group === 'overview' && f.themeName.startsWith('jetbrains'))],
-    ['darcula-overview.png', 'Classic Darcula. Quiet code cards.', 'Warm keywords, green strings and readable code — with the native execution path untouched.', fixtures.filter(f => f.group === 'overview' && f.themeName.startsWith('darcula'))],
+    ['dark-overview.png', 'Darkroom Dark, without the noise.', 'Transparent conversation. Gray code cards. Syntax colors without noisy error panels.', fixtures.filter(f => f.group === 'overview' && f.themeName === 'darkroom-dark')],
+    ['classic-overview.png', 'Darkroom Classic. Quiet code cards.', 'Warm keywords, green strings and readable code — with the native execution path untouched.', fixtures.filter(f => f.group === 'overview' && f.themeName === 'darkroom-classic')],
     ['language-gallery.png', 'One palette. Many languages.', 'Native filename-based highlighting, plus readable command and embedded-script previews.', fixtures.filter(f => f.group === 'languages')],
     ['code-cards.png', 'Code gets structure. Chat stays clear.', 'Recognized code is colored. Unknown code stays plain. Generating code keeps the same calm background.', fixtures.filter(f => f.group === 'cards')],
     ['diff-cards.png', 'Diffs you can actually read.', 'Language colors inside edits, tinted added/removed lines, emphasized changes — plus optional one-line tool rows.', fixtures.filter(f => f.group === 'diffs')],
@@ -52,7 +52,7 @@ try {
     await page.screenshot({ path: 'docs/screenshots/' + file, fullPage: true });
     const size = await page.evaluate(() => ({ width: innerWidth, height: document.documentElement.scrollHeight }));
     manifest.push({ file, ...size, themes: [...new Set(selected.map(f => f.themeName))], synthetic: true, renderer: 'Native Pi components in xterm.js', font: 'JetBrains Mono' });
-    if (file === 'jetbrains-overview.png') await page.locator('.card.failure').screenshot({ path: 'docs/screenshots/failure-state.png' });
+    if (file === 'dark-overview.png') await page.locator('.card.failure').screenshot({ path: 'docs/screenshots/failure-state.png' });
   }
   assert.deepEqual(failures, []);
   await writeFile('docs/screenshots/manifest.json', JSON.stringify(manifest, null, 2) + '\n');

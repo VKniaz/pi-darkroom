@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.3.0] - 2026-11-24
+
+### Changed
+- Renamed from `pi-jetbrains-transparent` to `pi-darkroom`. Themes are now `darkroom-dark` and `darkroom-classic`.
+- The compact-row setting is saved in `~/.pi/agent/pi-darkroom.json`; an existing setting from the previous name is picked up automatically.
+
 ## [0.2.0] - 2026-11-24
 
 ### Added

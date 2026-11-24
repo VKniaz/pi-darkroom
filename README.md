@@ -1,12 +1,12 @@
-# Pi JetBrains Transparent
+# Pi Darkroom
 
-Transparent conversation, quiet gray code cards, and JetBrains-inspired colors for [Pi](https://pi.dev/).
+Transparent conversation, readable diff and code cards, and IDE-style syntax colors for [Pi](https://pi.dev/). The palettes are inspired by JetBrains IDE dark themes.
 
 ![Recognized, unknown, and streaming code cards](docs/screenshots/code-cards.png)
 
 ## What you get
 
-- **Two themes:** `jetbrains-dark-transparent` and `darcula-transparent`.
+- **Two themes:** `darkroom-dark` (modern dark palette) and `darkroom-classic` (classic warm palette).
 - **Consistent code cards:** recognized code gets syntax colors; unknown code stays plain and readable on the same gray background.
 - **Readable plain text:** brighter text in plain/unknown Markdown cards, with UUIDs and formatted dates/times accented in the keyword color. These are visual pattern matches, not data validation. Programming-language strings retain their syntax colors.
 - **Stable generation:** code keeps its card while it streams. Completed commands and Markdown blocks get the enhanced highlighting.
@@ -22,20 +22,20 @@ This is display-only. It does not replace execution, add model tools, change pro
 ## Install
 
 ```sh
-pi install npm:pi-jetbrains-transparent
+pi install npm:pi-darkroom
 ```
 
 Run `/reload`, then open `/settings` → **Theme** and select either theme. Arrow keys preview themes; Enter keeps the selection and Esc cancels.
 
-Run `/command-colors` to check that the renderer is enabled. `/command-colors compact on|off` switches compact tool rows; the choice is saved in `~/.pi/agent/pi-jetbrains-transparent.json`. If you previously installed a manual copy, disable that copy before installing this package to avoid duplicate renderers and commands.
+Run `/command-colors` to check that the renderer is enabled. `/command-colors compact on|off` switches compact tool rows; the choice is saved in `~/.pi/agent/pi-darkroom.json`. If you previously installed a manual copy, disable that copy before installing this package to avoid duplicate renderers and commands.
 
 Requires Pi's renderer and Markdown-transformer APIs. Tested on **Pi 1.5.2 and 1.6.0 on macOS**; other platforms are not yet verified.
 
-GitHub installation is also supported: `pi install git:github.com/VKniaz/pi-jetbrains-transparent`. The npm package includes Pi discovery metadata; catalog visibility depends on indexing.
+GitHub installation is also supported: `pi install git:github.com/VKniaz/pi-darkroom`. The npm package includes Pi discovery metadata; catalog visibility depends on indexing.
 
 ## Gallery
 
-[JetBrains Dark overview](docs/screenshots/jetbrains-overview.png) · [Darcula overview](docs/screenshots/darcula-overview.png) · [Same-command comparison](docs/screenshots/before-after.png) · [Failure state](docs/screenshots/failure-state.png) · [Plain-text accents](docs/screenshots/plain-text.png)
+[Darkroom Dark overview](docs/screenshots/dark-overview.png) · [Darkroom Classic overview](docs/screenshots/classic-overview.png) · [Same-command comparison](docs/screenshots/before-after.png) · [Failure state](docs/screenshots/failure-state.png) · [Plain-text accents](docs/screenshots/plain-text.png)
 
 ![Edit diffs with syntax colors and optional compact rows](docs/screenshots/diff-cards.png)
 
@@ -53,12 +53,23 @@ These are real browser captures of native Pi components rendered in an isolated 
 - Diff cards read the native edit preview; if a future Pi version changes that internal shape, edits fall back to Pi's own diff rendering.
 - Dark themes use charcoal cards; light themes use light gray. The companion themes keep normal and error message backgrounds transparent.
 
+## Upgrading from pi-jetbrains-transparent
+
+This package was renamed. Remove the old one first so only one renderer is loaded, then select a new theme name:
+
+```sh
+pi remove npm:pi-jetbrains-transparent
+pi install npm:pi-darkroom
+```
+
+In `/settings` → **Theme**, `jetbrains-dark-transparent` is now `darkroom-dark` and `darcula-transparent` is now `darkroom-classic`. Your compact-row setting carries over.
+
 ## Remove
 
 Switch to a built-in theme first, then:
 
 ```sh
-pi remove npm:pi-jetbrains-transparent
+pi remove npm:pi-darkroom
 ```
 
 Run `/reload`.

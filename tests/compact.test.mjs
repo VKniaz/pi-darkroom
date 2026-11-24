@@ -35,7 +35,7 @@ test('compact on: a successful collapsed result is one summary line with an expa
   assert.ok(!text.includes('line 12'));
   assert.match(text, /✓ 12 lines/);
   assert.match(text, /ctrl\+o/);
-  const saved = JSON.parse(await readFile(join(h.dir, 'pi-jetbrains-transparent.json'), 'utf8'));
+  const saved = JSON.parse(await readFile(join(h.dir, 'pi-darkroom.json'), 'utf8'));
   assert.equal(saved.compactTools, true);
 });
 
@@ -49,7 +49,7 @@ test('compact on still shows expanded output, failures and running output in ful
 test('compact off restores native previews and persists', async () => {
   await setCompact('off');
   assert.ok(bashResult().includes('line 12'));
-  const saved = JSON.parse(await readFile(join(h.dir, 'pi-jetbrains-transparent.json'), 'utf8'));
+  const saved = JSON.parse(await readFile(join(h.dir, 'pi-darkroom.json'), 'utf8'));
   assert.equal(saved.compactTools, false);
 });
 

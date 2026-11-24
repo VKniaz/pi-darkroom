@@ -1,7 +1,7 @@
 {
-  "name": "pi-jetbrains-transparent",
-  "version": "0.2.0",
-  "description": "Transparent chat, gray code cards and JetBrains-inspired syntax colors for Pi.",
+  "name": "pi-darkroom",
+  "version": "0.3.0",
+  "description": "Transparent chat, readable diff and code cards, and IDE-style syntax colors for Pi.",
   "type": "module",
   "license": "MIT",
   "author": "Kniaz",
@@ -9,8 +9,9 @@
     "pi-package",
     "theme",
     "syntax-highlighting",
-    "jetbrains",
-    "darcula"
+    "diff",
+    "code-cards",
+    "darkroom"
   ],
   "files": [
     "index.ts",
@@ -37,7 +38,7 @@
     "themes": [
       "./themes/*.json"
     ],
-    "image": "https://raw.githubusercontent.com/VKniaz/pi-jetbrains-transparent/main/docs/screenshots/jetbrains-overview.png"
+    "image": "https://raw.githubusercontent.com/VKniaz/pi-darkroom/main/docs/screenshots/diff-cards.png"
   },
   "scripts": {
     "test": "PI_OFFLINE=1 node --test tests/*.test.mjs",
@@ -68,10 +69,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VKniaz/pi-jetbrains-transparent.git"
+    "url": "git+https://github.com/VKniaz/pi-darkroom.git"
   },
-  "homepage": "https://github.com/VKniaz/pi-jetbrains-transparent#readme",
+  "homepage": "https://github.com/VKniaz/pi-darkroom#readme",
   "bugs": {
-    "url": "https://github.com/VKniaz/pi-jetbrains-transparent/issues"
+    "url": "https://github.com/VKniaz/pi-darkroom/issues"
   }
 }

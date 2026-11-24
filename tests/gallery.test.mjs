@@ -4,8 +4,8 @@ import { buildFixtures } from '../examples/fixtures.mjs';
 
 test('visuals use both real themes, multiple formats and an explicit synthetic failure', async () => {
   const fixtures = await buildFixtures();
-  assert.ok(fixtures.some(f => f.themeName === 'jetbrains-dark-transparent'));
-  assert.ok(fixtures.some(f => f.themeName === 'darcula-transparent'));
+  assert.ok(fixtures.some(f => f.themeName === 'darkroom-dark'));
+  assert.ok(fixtures.some(f => f.themeName === 'darkroom-classic'));
   for (const language of ['python', 'javascript', 'typescript', 'yaml', 'json', 'java', 'bash']) {
     assert.ok(fixtures.some(f => f.language === language), 'Missing language: ' + language);
   }

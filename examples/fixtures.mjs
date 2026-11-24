@@ -24,7 +24,7 @@ export async function buildFixtures() {
   process.env.PI_CODING_AGENT_DIR = dir;
   try {
     const { sdk, tui } = await loadPiSdk();
-    const themeNames = ['jetbrains-dark-transparent', 'darcula-transparent'];
+    const themeNames = ['darkroom-dark', 'darkroom-classic'];
     await mkdir(join(dir, 'themes'));
     for (const name of themeNames) await copyFile(resolve('themes', name + '.json'), join(dir, 'themes', name + '.json'));
     const extensionPath = resolve('index.ts');
@@ -41,8 +41,8 @@ export async function buildFixtures() {
       for (const handler of loaded.extensions.find(e => e.path === extensionPath).handlers.get('session_start') ?? []) {
         await handler({ reason: 'startup' }, { mode: 'tui', ui: { theme: activeTheme } });
       }
-      const modern = themeName.startsWith('jetbrains');
-      const themeLabel = modern ? 'JetBrains Dark Transparent' : 'Darcula Transparent';
+      const modern = themeName === 'darkroom-dark';
+      const themeLabel = modern ? 'Darkroom Dark' : 'Darkroom Classic';
       const palette = { background: modern ? '#1e1f22' : '#2b2b2b', foreground: modern ? '#bcbec4' : '#a9b7c6' };
       function add(key, title, language, tool, args, kind = 'code', group = 'overview', cols = 62, native = false) {
         const definition = tool === 'bash' ? sdk.createBashToolDefinition(dir) : sdk.createWriteToolDefinition(dir);

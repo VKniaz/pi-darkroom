@@ -1,6 +1,6 @@
 {
   "$schema": "https://pi.dev/schemas/theme.schema.json",
-  "name": "darcula-transparent",
+  "name": "darkroom-classic",
   "appearance": "dark",
   "vars": {
     "text": "#A9B7C6",
